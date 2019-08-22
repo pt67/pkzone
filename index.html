@@ -1,0 +1,891 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="shortcut icon" type="image/x-icon" href="https://static.codepen.io/assets/favicon/favicon-aec34940fbc1a6e787974dcd360f2c6b63348d4b1f4e06c77743096d55480f33.ico" />
+<link rel="mask-icon" type="" href="test.svg" color="#111" />
+
+<title>CodePen - Interactive Chef Slider</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://fonts.googleapis.com/css?family=Lato:400,700,900" rel="stylesheet">
+<link rel="stylesheet" href="css/reset.min.css">
+<style>
+    /* vars */
+/* mixins */
+/* styles */
+html {
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  background-color: #FFF;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  font-size: 16px;
+  font-family: "Lato", sans-serif;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+}
+
+#debug {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  z-index: 10;
+  text-align: right;
+}
+
+#calculator-wrapper {
+  margin: 0 auto;
+  width: 100%;
+  height: 768px;
+  box-sizing: border-box;
+  background-color: #7bac22;
+}
+@media (max-width: 768px) {
+  #calculator-wrapper {
+    padding: 1rem 0 0;
+    height: auto;
+  }
+}
+#calculator-wrapper h2 {
+  margin: 0 0 1.5rem;
+  color: #FFF;
+  font-size: 3rem;
+  font-weight: 700;
+  letter-spacing: -.0625rem;
+  line-height: 104%;
+}
+#calculator-wrapper p {
+  margin: 0 0 1.5rem;
+  color: #e9f2d7;
+  font-size: 1rem;
+  line-height: 156%;
+}
+#calculator-wrapper p:last-of-type {
+  margin-bottom: 0;
+}
+#calculator-wrapper .inner {
+  margin: 0 auto;
+  box-sizing: border-box;
+  position: relative;
+  max-width: 1000px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-end;
+  align-content: flex-end;
+}
+#calculator-wrapper .inner .text-content {
+  width: 25rem;
+  position: absolute;
+  left: 0;
+  top: 38%;
+  -webkit-transform: translateY(-50%);
+          transform: translateY(-50%);
+}
+@media (max-width: 1024px) {
+  #calculator-wrapper .inner .text-content {
+    width: 40%;
+    left: 2rem;
+    top: 25%;
+  }
+}
+@media (max-width: 850px) {
+  #calculator-wrapper .inner .text-content {
+    width: 45%;
+    left: 2rem;
+    top: 2rem;
+    -webkit-transform: none;
+            transform: none;
+  }
+}
+@media (max-width: 768px) {
+  #calculator-wrapper .inner .text-content {
+    padding: 1rem 1rem;
+    position: relative;
+    top: auto;
+    left: auto;
+    width: auto;
+  }
+  #calculator-wrapper .inner .text-content h2 {
+    font-size: 2.5rem;
+  }
+}
+#calculator-wrapper .inner #svgContainer {
+  position: relative;
+  width: 100%;
+  height: auto;
+  margin: 0 auto 0em;
+  pointer-events: none;
+  overflow: hidden;
+}
+#calculator-wrapper .inner #svgContainer div {
+  position: relative;
+  width: 100%;
+  height: 0;
+  overflow: hidden;
+  padding-bottom: 60%;
+}
+#calculator-wrapper .inner #svgContainer div svg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+#calculator-wrapper .inner #slider-wrapper {
+  margin: 0 auto;
+  padding: 2rem;
+  width: 100%;
+  height: 150px;
+  box-sizing: border-box;
+  position: relative;
+  display: flex;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+  background-color: #c1966b;
+}
+#calculator-wrapper .inner #slider-wrapper span {
+  margin: 0;
+  padding: .35rem 1rem 0;
+  display: block;
+  width: 120px;
+  height: 28px;
+  box-sizing: border-box;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #FFF;
+  text-align: center;
+  background-color: #1a1a1a;
+  border-radius: 8px;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  position: relative;
+  left: 4px;
+}
+#calculator-wrapper .inner #slider-wrapper span:last-of-type {
+  border-radius: 8px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  left: auto;
+  right: 4px;
+}
+#calculator-wrapper .inner #slider-wrapper #slider {
+  width: 100%;
+  height: 28px;
+  display: block;
+  box-sizing: border-box;
+  background: #FFF;
+  outline: none;
+  box-shadow: inset 0 4px 8px 0 rgba(0, 0, 0, 0.25);
+}
+#calculator-wrapper .inner #slider-wrapper #thumb {
+  width: 54px;
+  height: 54px;
+  box-sizing: border-box;
+  position: absolute;
+  left: 0;
+  background-color: #c1272d;
+  border-radius: 50%;
+  border: solid 3px #871b1f;
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.25);
+}
+#calculator-wrapper .inner #slider-wrapper .slider {
+  margin: 0;
+  -webkit-appearance: none;
+  /* Override default CSS styles */
+  -moz-appearance: none;
+       appearance: none;
+  width: 100%;
+  height: 28px;
+  display: block;
+  box-sizing: border-box;
+  background: #FFF;
+  outline: none;
+  box-shadow: inset 0 4px 8px 0 rgba(0, 0, 0, 0.25);
+  transition: opacity .2s;
+}
+#calculator-wrapper .inner #slider-wrapper .slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 54px;
+  height: 54px;
+  position: relative;
+  background-color: #c1272d;
+  border-radius: 50%;
+  border: solid 3px #871b1f;
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  transition: box-shadow .25s ease-out;
+}
+#calculator-wrapper .inner #slider-wrapper .slider::-webkit-slider-thumb:hover {
+  box-shadow: 0px 2px 0 4px rgba(0, 0, 0, 0.15);
+}
+#calculator-wrapper .inner #slider-wrapper .slider::-moz-range-thumb {
+  width: 54px;
+  height: 54px;
+  background-color: #c1272d;
+  border-radius: 50%;
+  border: solid 3px #871b1f;
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+}
+#calculator-wrapper .inner #slider-wrapper .slider::-moz-range-thumb:hover {
+  box-shadow: 0px 2px 0 4px rgba(0, 0, 0, 0.15);
+}
+#calculator-wrapper .inner #slider-wrapper #output {
+  padding: .5rem 1rem;
+  box-sizing: border-box;
+  width: 100px;
+  position: absolute;
+  top: 5px;
+  left: 0px;
+  background-color: #FFF;
+  border-radius: 4px;
+  color: #6f9b1f;
+  font-weight: 900;
+  text-align: center;
+}
+#calculator-wrapper .inner #slider-wrapper #output:after {
+  content: "";
+  position: absolute;
+  bottom: -9px;
+  left: 50%;
+  -webkit-transform: translateX(-50%);
+          transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 10px solid #FFF;
+}
+@media (max-width: 768px) {
+  #calculator-wrapper .inner #slider-wrapper {
+    padding: 2rem .5rem;
+    height: auto;
+  }
+  #calculator-wrapper .inner #slider-wrapper span {
+    padding: .5rem .75rem 0;
+    font-size: .65rem;
+    width: auto;
+  }
+  #calculator-wrapper .inner #slider-wrapper #output {
+    top: -25px;
+  }
+}
+#calculator-wrapper .inner #bubble {
+  margin: 0;
+  padding: 2rem .5rem;
+  width: 228px;
+  box-sizing: border-box;
+  position: absolute;
+  right: 0;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+          transform: translateY(-50%);
+  background-color: #c1272d;
+  border: solid 3px #871b1f;
+  border-radius: 6px;
+  border-top-left-radius: 0;
+  box-shadow: 4px 5px 0 rgba(0, 0, 0, 0.15);
+  color: #FFF;
+  font-size: 2rem;
+  font-weight: 700;
+  text-align: center;
+}
+#calculator-wrapper .inner #bubble span {
+  margin: 0 0 .25rem;
+  display: block;
+}
+#calculator-wrapper .inner #bubble span:nth-of-type(2) {
+  font-size: 2.375rem;
+  font-weight: 900;
+}
+#calculator-wrapper .inner #bubble span:nth-of-type(3) {
+  font-size: 1.5rem;
+}
+#calculator-wrapper .inner #bubble span:last-of-type {
+  margin-bottom: 0;
+}
+#calculator-wrapper .inner #bubble .triangle {
+  width: 31.7px;
+  position: absolute;
+  top: -3px;
+  left: -29.5px;
+  pointer-events: none;
+  overflow: hidden;
+}
+#calculator-wrapper .inner #bubble .triangle div {
+  position: relative;
+  width: 100%;
+  height: 0;
+  overflow: hidden;
+  padding-bottom: 119.87%;
+}
+#calculator-wrapper .inner #bubble .triangle div svg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+@media (max-width: 1024px) {
+  #calculator-wrapper .inner #bubble {
+    padding: 1.25rem .5rem;
+    right: auto;
+    left: 2rem;
+    top: 50%;
+    top: auto;
+    bottom: 40%;
+    -webkit-transform: none;
+            transform: none;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 0;
+    width: 40%;
+  }
+  #calculator-wrapper .inner #bubble span:nth-of-type(1) {
+    display: inline-block;
+    font-size: 2rem;
+  }
+  #calculator-wrapper .inner #bubble span:nth-of-type(2) {
+    display: inline-block;
+    font-size: 2rem;
+  }
+  #calculator-wrapper .inner #bubble .triangle {
+    left: auto;
+    right: -29.5px;
+    -webkit-transform: scale(-1, 1);
+            transform: scale(-1, 1);
+  }
+}
+@media (max-width: 768px) {
+  #calculator-wrapper .inner #bubble {
+    padding: 1rem .5rem;
+    left: 1rem;
+    bottom: 30%;
+    font-size: 1.5rem;
+  }
+  #calculator-wrapper .inner #bubble span:nth-of-type(1) {
+    font-size: 1.35rem;
+  }
+  #calculator-wrapper .inner #bubble span:nth-of-type(2) {
+    font-size: 1.9rem;
+  }
+  #calculator-wrapper .inner #bubble span:nth-of-type(3) {
+    font-size: 1rem;
+  }
+}
+
+  </style>
+</head>
+<body translate="no">
+<div id="calculator-wrapper">
+<div class="inner">
+<div class="text-content">
+<h2>Don’t burn your revenue!</h2>
+<p>Nam euismod libero et condimentum molestie. Phasellus rhoncus ut libero id feugiat. Sed ut pellentesque odio, quis ornare sapien. Aliquam porta, felis quis volutpat suscipit, arcu eros volutpat odio.</p>
+</div>
+<div id="svgContainer">
+<div>
+<svg class="mySVG" xmlns="http://www.w3.org/2000/svg" width="1000" height="600" viewBox="0 0 1000 600">
+<defs>
+<path id="mouthMaskPath" d="M664.8,272.2h-30c-1.4,0-2.5-1.1-2.5-2.5c0-0.1,0-0.3,0-0.4c0.2-1.2,1.2-2.1,2.5-2.1h30 c1.2,0,2.2,0.9,2.4,2c0,0.2,0.1,0.3,0.1,0.5C667.3,271.1,666.2,272.2,664.8,272.2z" />
+</defs>
+<clipPath id="mouthMask">
+<use xlink:href="#mouthMaskPath" overflow="visible" />
+</clipPath>
+<g id="chef" opacity="0">
+<path id="neck" fill="#CF965E" d="M610.5 251h80v70h-80z" />
+<path fill="#F2F2F2" d="M775 580H525V367.3c0-20.1 16.3-36.3 36.3-36.3h177.3c20.1 0 36.3 16.3 36.3 36.3V580z" />
+<path fill="none" stroke="#FFF" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="60" d="M817.4 536c-5.7-42.5-18.6-102.6-41.6-158" />
+<g id="jacket">
+<path fill="none" stroke="#E6E6E6" stroke-miterlimit="10" stroke-width="5" d="M684.5 331.5c-50.2 4.9-89.5 47.2-89.5 98.7V580" />
+<g fill="#4D4D4D">
+<circle cx="617.5" cy="392" r="5" />
+<circle cx="682.5" cy="392" r="5" />
+<circle cx="618" cy="433.3" r="5" />
+<circle cx="683" cy="433.3" r="5" />
+<circle cx="618" cy="474.7" r="5" />
+<circle cx="683" cy="474.7" r="5" />
+<circle cx="618" cy="516" r="5" />
+<circle cx="683" cy="516" r="5" />
+</g>
+</g>
+<circle cx="818" cy="536" r="30" fill="gray" />
+<path fill="none" stroke="#CF965E" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="50" d="M818 536l1.4 19" />
+<path fill="#AE2328" d="M692.1 341h-84.3c-3 0-5.4-2.4-5.4-5.4v-12.3c0-3 2.4-5.4 5.4-5.4h84.3c3 0 5.4 2.4 5.4 5.4v12.3c0 3-2.4 5.4-5.4 5.4z" />
+<path fill="#FFF" d="M697.5 336h-95v-15c0-2.8 2.2-5 5-5h85c2.8 0 5 2.2 5 5v15z" />
+<g id="neckStuff">
+<path fill="#AE2328" d="M645 316h10.2v20.2H645z" />
+<path fill="#AE2328" d="M654.5 341.1c10.5 11 32.8 30.4 61.5 32.4 3.4.2 5.5-3.7 3.3-6.4-8.2-9.9-27.5-28.2-61.5-32.6-3.6-.5-5.9 3.9-3.3 6.6z" />
+<circle cx="649.8" cy="333.6" r="9.6" fill="#C1272D" />
+<path fill="#C1272D" d="M655.6 337.9c11.4 4.9 34.4 12.5 56.6 4.9 2.7-.9 3-4.6.5-5.9-9.3-4.9-29.7-12.5-56.6-5-3 .8-3.3 4.8-.5 6z" />
+</g>
+</g>
+<g id="head" opacity="0">
+<path id="hairBack" fill="#533C26" d="M592.1,264.7h116.9c9.7,0,17.6-7.9,17.6-17.6V134.5h-152v112.6C574.5,256.8,582.4,264.7,592.1,264.7z" />
+<path id="earR" fill="#CF965E" d="M717.5,240.7L717.5,240.7c8.8,0,16-7.2,16-16v-18.6c0-4.1-3.3-7.4-7.4-7.4h-18.6v42H717.5z" />
+<path id="earL" fill="#CF965E" d="M583.5,240.7L583.5,240.7c-8.8,0-16-7.2-16-16v-18.6c0-4.1,3.3-7.4,7.4-7.4h18.6v42H583.5z" />
+<g id="face">
+<path id="faceSkin" fill="#E6A769" d="M665.1,305.8h-29.2c-30.6,0-55.4-24.8-55.4-55.4v-98.7h140v98.7C720.5,281,695.7,305.8,665.1,305.8z" />
+<path fill="#533C26" d="M721.5,171.5c-13.2,5.9-22.8,9.2-39.6,10.9l3.7,6.4c-27.9,2.2-44.5,0-62.5-7.2c0,0,1.2,6.6,1.2,6.6 c-19-4.1-31.4-7.8-44.8-14.7v-60.9h142V171.5z" />
+<g id="hat">
+<g id="hatBase">
+<path fill="#FFFFFF" d="M726.5,155.7c-50.7,16-101.3,16-152,0v-60h152V155.7z" />
+<g>
+<defs>
+<path id="hatMaskPath" d="M726.5,155.7c-50.7,16-101.3,16-152,0v-60h152V155.7z" />
+</defs>
+<clipPath id="hatMask">
+<use xlink:href="#hatMaskPath" overflow="visible" />
+</clipPath>
+<g clip-path="url(#hatMask)">
+<line fill="none" stroke="#F2F2F2" stroke-width="5" stroke-miterlimit="10" x1="581.5" y1="169.7" x2="581.5" y2="93.2" />
+<line fill="none" stroke="#F2F2F2" stroke-width="5" stroke-miterlimit="10" x1="593.4" y1="169.7" x2="593.4" y2="93.2" />
+<line fill="none" stroke="#F2F2F2" stroke-width="5" stroke-miterlimit="10" x1="605.2" y1="169.7" x2="605.2" y2="93.2" />
+<line fill="none" stroke="#F2F2F2" stroke-width="5" stroke-miterlimit="10" x1="617.1" y1="169.7" x2="617.1" y2="93.2" />
+<line fill="none" stroke="#F2F2F2" stroke-width="5" stroke-miterlimit="10" x1="629" y1="169.7" x2="629" y2="93.2" />
+<line fill="none" stroke="#F2F2F2" stroke-width="5" stroke-miterlimit="10" x1="640.9" y1="169.7" x2="640.9" y2="93.2" />
+<line fill="none" stroke="#F2F2F2" stroke-width="5" stroke-miterlimit="10" x1="652.8" y1="169.7" x2="652.8" y2="93.2" />
+<line fill="none" stroke="#F2F2F2" stroke-width="5" stroke-miterlimit="10" x1="664.6" y1="169.7" x2="664.6" y2="93.2" />
+<line fill="none" stroke="#F2F2F2" stroke-width="5" stroke-miterlimit="10" x1="676.5" y1="169.7" x2="676.5" y2="93.2" />
+<line fill="none" stroke="#F2F2F2" stroke-width="5" stroke-miterlimit="10" x1="688.4" y1="169.7" x2="688.4" y2="93.2" />
+<line fill="none" stroke="#F2F2F2" stroke-width="5" stroke-miterlimit="10" x1="700.2" y1="169.7" x2="700.2" y2="93.2" />
+<line fill="none" stroke="#F2F2F2" stroke-width="5" stroke-miterlimit="10" x1="712.1" y1="169.7" x2="712.1" y2="93.2" />
+<line fill="none" stroke="#F2F2F2" stroke-width="5" stroke-miterlimit="10" x1="724" y1="169.7" x2="724" y2="93.2" />
+</g>
+</g>
+</g>
+<g id="hatTop">
+<circle fill="#FFFFFF" cx="584" cy="99.2" r="47.5" />
+<circle fill="#FFFFFF" cx="721" cy="99.2" r="47.5" />
+<circle fill="#FFFFFF" cx="650" cy="76.7" r="60" />
+</g>
+</g>
+</g>
+<circle id="eyeL" cx="622.5" cy="222.7" r="5" />
+<circle id="eyeR" cx="676" cy="222.7" r="5" />
+<g id="eyebrowL">
+<line opacity="0.15" fill="none" stroke="#000000" stroke-width="12" stroke-miterlimit="10" x1="640.5" y1="210.5" x2="594.9" y2="210.5" />
+<line fill="none" stroke="#533C26" stroke-width="12" stroke-miterlimit="10" x1="640.4" y1="206.5" x2="594.8" y2="206.5" />
+</g>
+<g id="eyebrowR">
+<line opacity="0.15" fill="none" stroke="#000000" stroke-width="12" stroke-miterlimit="10" x1="659.4" y1="210.5" x2="704.8" y2="210.5" />
+<line fill="none" stroke="#533C26" stroke-width="12" stroke-miterlimit="10" x1="659.1" y1="206.5" x2="704.5" y2="206.5" />
+</g>
+<g id="mouth">
+<path style="display: none;" id="mouthMedium" fill="#231F20" d="M664.2,279.7h-28.8c-3.6,0-6.6-2.9-6.6-6.6v-3.7c0-5.4,4.4-9.8,9.8-9.8h22.5c5.4,0,9.8,4.4,9.8,9.8v3.7 C670.8,276.7,667.9,279.7,664.2,279.7z" />
+<path style="display: none;" id="mouthLarge" fill="#231F20" d="M673.7,277.7H626c-2,0-3.7-1.6-3.7-3.7l0,0c0-0.6,0-1.1,0.1-1.6c0.8-6,6-10.7,12.2-10.7H665 c6.3,0,11.5,4.7,12.2,10.8c0.1,0.5,0.1,1,0.1,1.6l0,0C677.3,276,675.7,277.7,673.7,277.7z" />
+<path style="display: none;" id="mouthSmall" fill="#231F20" d="M651.8,277.7h-4c-4.4,0-8-3.6-8-8c0-0.2,0-0.4,0-0.6c0.3-4.2,3.8-7.4,8-7.4h4c4.2,0,7.7,3.3,8,7.4 c0,0.2,0,0.4,0,0.6C659.8,274.1,656.2,277.7,651.8,277.7z" />
+<path style="display: none;" id="mouthDefault" fill="#231F20" d="M664.8,272.2h-30c-1.4,0-2.5-1.1-2.5-2.5c0-0.1,0-0.3,0-0.4c0.2-1.2,1.2-2.1,2.5-2.1h30c1.2,0,2.2,0.9,2.4,2 c0,0.2,0.1,0.3,0.1,0.5C667.3,271.1,666.2,272.2,664.8,272.2z" />
+<path id="mouthBG" fill="#231F20" d="M664.8,272.2h-30c-1.4,0-2.5-1.1-2.5-2.5c0-0.1,0-0.3,0-0.4c0.2-1.2,1.2-2.1,2.5-2.1h30c1.2,0,2.2,0.9,2.4,2 c0,0.2,0.1,0.3,0.1,0.5C667.3,271.1,666.2,272.2,664.8,272.2z" />
+<g clip-path="url(#mouthMask)">
+<ellipse id="tongue" fill="#C1272D" cx="649.8" cy="280.9" rx="15" ry="8" />
+<rect id="teeth" x="629.8" y="258" fill="#FFFFFF" width="40" height="8" />
+</g>
+</g>
+<g id="nose">
+<ellipse opacity="0.15" fill="#231F20" cx="649.5" cy="261.7" rx="30" ry="9" />
+<path fill="#533C26" d="M680.1,264.7h-61.1c-4.1,0-6.4-4.8-3.8-8l11.9-14.2c0.9-1.1,2.3-1.8,3.8-1.8h37.4c1.5,0,2.8,0.6,3.8,1.8 l11.9,14.2C686.5,259.8,684.2,264.7,680.1,264.7z" />
+<circle id="noseSkin" fill="#E6A769" cx="649.5" cy="234.7" r="15" />
+</g>
+</g>
+<path fill="#D1B08A" d="M1000 600H0l160-61h680z" />
+<g class="grill">
+<path fill="#666" d="M155.2 587.5H87l68.2-32.5zM844.9 587.5h68.2L844.9 555z" />
+<path fill="gray" d="M155 551h690v32H155z" />
+<path fill="none" stroke="#333" stroke-linecap="round" stroke-miterlimit="10" stroke-width="13" d="M845 551H155" />
+<path fill="#4D4D4D" d="M76.7 575.2l75.8-30.1c3.3-1.3 7.1.3 8.4 3.6 1.3 3.2-.2 6.8-3.3 8.3l-74.2 33.9c-4.3 2-9.3.1-11.3-4.2s-.1-9.3 4.2-11.3c.1-.1.2-.2.4-.2zM916.7 590.8l-74.2-33.9c-3.2-1.5-4.7-5.3-3.2-8.6 1.4-3.1 5.1-4.6 8.3-3.3l75.8 30.1c4.4 1.7 6.5 6.7 4.8 11s-6.7 6.5-11 4.8c-.3 0-.4 0-.5-.1zM491.5 583l1.8-32c.2-3.7 3.4-6.6 7.1-6.3 3.5.2 6.2 3 6.3 6.3l1.8 32c.3 4.7-3.3 8.7-8 9-4.7.3-8.7-3.3-9-8v-1zM422.9 580.5l11.7-31.5c1.3-3.5 5.2-5.3 8.7-4 3.2 1.2 5 4.7 4.2 8l-8.3 32.5c-1.2 4.6-5.8 7.3-10.4 6.1-4.6-1.2-7.3-5.8-6.1-10.4 0-.2.1-.5.2-.7zM344.8 578.5l21.5-31.1c2.1-3.1 6.3-3.8 9.4-1.7 2.9 2 3.7 5.8 2 8.8l-18.5 32.9c-2.3 4.1-7.5 5.6-11.6 3.3s-5.6-7.5-3.3-11.6c.2-.2.3-.4.5-.6zM256.8 577.2l31.3-30.8c2.6-2.6 6.9-2.6 9.5.1 2.5 2.5 2.5 6.5.3 9.1l-28.7 33.2c-3.1 3.6-8.4 3.9-12 .9s-3.9-8.4-.9-12c.2-.2.3-.4.5-.5zM168.7 576.4l41.1-30.6c3-2.2 7.2-1.6 9.4 1.4 2.1 2.8 1.6 6.8-1 9.1l-38.9 33.4c-3.6 3.1-8.9 2.7-12-.9-3.1-3.6-2.7-8.9.9-12 .2-.2.3-.3.5-.4zM560.9 585.5l-8.3-32.5c-.9-3.6 1.3-7.3 4.9-8.2 3.4-.9 6.8 1 8 4.2l11.7 31.5c1.6 4.4-.6 9.3-5 10.9-4.4 1.6-9.3-.6-10.9-5-.2-.3-.3-.6-.4-.9zM640.8 587.5l-18.5-32.9c-1.8-3.2-.7-7.3 2.6-9.2 3-1.7 6.9-.8 8.8 2l21.5 31.1c2.7 3.9 1.7 9.2-2.2 11.8-3.9 2.7-9.2 1.7-11.8-2.2-.1-.1-.3-.4-.4-.6zM730.8 588.8l-28.7-33.2c-2.4-2.8-2.1-7.1.7-9.5 2.7-2.3 6.6-2.1 9.1.3l31.3 30.8c3.3 3.3 3.4 8.7.1 12-3.3 3.3-8.7 3.4-12 .1-.2-.1-.4-.3-.5-.5zM810.7 589.6l-38.9-33.4c-2.8-2.4-3.1-6.7-.7-9.5 2.3-2.7 6.3-3.1 9.1-1l41.1 30.6c3.8 2.8 4.5 8.1 1.7 11.9-2.8 3.8-8.1 4.5-11.9 1.7-.1 0-.3-.1-.4-.3z" />
+<path fill="none" stroke="#333" stroke-linecap="round" stroke-miterlimit="10" stroke-width="17" d="M920 584H80" />
+</g>
+<path id="arm" opacity="0" fill="none" stroke="#FFF" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="60" d="M374.4 490.7C482 486 481 462 525 378" />
+<g id="hand" opacity="0">
+<circle id="sleeveHole" cx="0" cy="496" r="30" fill="gray" />
+<line id="forearm" fill="none" stroke="#CF965E" stroke-width="50" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" x1="348" y1="503" x2="372" y2="496" />
+<circle id="handBG" fill="#E6A769" cx="242.5" cy="502" r="35" />
+<line id="skilletHandle" fill="none" stroke="#1A1A1A" stroke-width="15" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" x1="185" y1="534.5" x2="245" y2="505.5" />
+<circle id="handThumb" fill="#E6A769" cx="235.5" cy="491" r="20" />
+</g>
+<g id="skillet" opacity="0">
+<path d="M100.3,533.5l3.9,10h161.7l4.1-10.7c0-5.1-38.1-9.2-85-9.2s-85,4.1-85,9.2" />
+<path fill="none" stroke="#4D4D4D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M100,532.7c0-5.1,38.1-9.2,85-9.2s85,4.1,85,9.2" />
+<g id="money">
+<rect id="sideL" x="177.1" y="535" fill="#ceccbe" width="1" height="1" />
+<rect id="sideR" x="177.1" y="535" fill="#ceccbe" width="1" height="1" />
+<g class="top">
+<rect x="143.6" y="535" fill="#FFFFFF" width="68.1" height="8" />
+<rect x="166.2" y="535.5" fill="#D5DAEF" width="23.9" height="7" />
+<rect x="187.6" y="535" fill="#A7B1E0" width="19.4" height="8" />
+<rect x="145" y="535.5" fill="#999999" width="6.1" height="2" />
+<rect x="199.5" y="535.5" fill="#FFFFFF" width="6.1" height="2" />
+<rect x="163.7" y="535" fill="#999999" width="5" height="8" />
+<ellipse fill="#DBDBE4" cx="147" cy="541.5" rx="2" ry="1" />
+</g>
+<g class="front">
+<rect x="143.6" y="542.9" fill="#f2f2eb" width="68.1" height="1" />
+<rect x="163.7" y="542.9" fill="#6D6D6D" width="5" height="1" />
+<rect x="187.6" y="542.9" fill="#6674BC" width="19.4" height="1" />
+</g>
+</g>
+<path fill="#1A1A1A" d="M185,542c-44.7,0-81.4-3.8-84.7-8.5l7,18c2.7,7,9.1,11.9,16.5,12.7c40.8,4.3,81.6,4.3,122.5,0 c7.4-0.8,13.8-5.7,16.5-12.7l7-18C266.4,538.2,229.7,542,185,542z" />
+<path fill="none" stroke="#4D4D4D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M270,532.7c0,5.1-38.1,9.2-85,9.2s-85-4.1-85-9.2" />
+</g>
+</svg>
+</div>
+</div>
+<div id="slider-wrapper">
+<span>£1,000</span>
+<div id="slider"></div>
+<span>£100,000</span>
+<div id="thumb"></div>
+<div id="output">£1,000</div>
+</div>
+
+<div id="bubble">
+<span>You lose</span>
+<span id="bubble-result">£2,800</span>
+<span>per month!</span>
+<div class="triangle">
+<div>
+<svg xmlns="http://www.w3.org/2000/svg" width="31.7" height="38" viewBox="0 0 31.7 38">
+<path fill="#C1272D" stroke="#871B1F" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="3" d="M30.2 1.5H6.5C2 1.5-.2 7 3 10.1l27.2 26.4" />
+</svg>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script src='js/tween.min.js'></script>
+<script src='js/Draggable.min.js'></script>
+<script src='js/throwPropsPlug.min.js'></script>
+<script src='js/morph.min.js'></script>
+<script id="rendered-js">
+      var calculatorWrapper = document.getElementById('calculator-wrapper'), slider = document.getElementById("slider"), thumb = document.getElementById("thumb"), sliderWrapper = document.getElementById("slider-wrapper"), output = document.getElementById("output"), bubbleResult = document.getElementById("bubble-result"), skillet = document.getElementById("skillet"), skilletHandle = document.getElementById("skilletHandle"), money = document.getElementById("money");
+var sliderMin = 1000, sliderMax = 100000;
+var sliderValue, sliderW, sliderCoords, sliderWrapperCoords, thumbValue, thumbPerc, thumbCoords, thumbDragging = false;
+var skilletMax = 634, skilletHandleMin = 185, skilletHandleMax = 820, skilletHandleMin2 = 245, skilletHandleMax2 = 760;
+var moneyMin = -65, moneyMax = 65, moneyHeightMax = 70;
+var armPoints = {x1: 292, y1: 494, h1x: 400, h1y: 490};
+var eyeLCoords, eyeRCoords, noseCoords, mouthCoords, eyeLAngle, eyeLX, eyeLY, eyeRAngle, eyeRX, eyeRY, noseAngle, noseX, noseY, mouthAngle, mouthX, mouthY, mouthR, faceX, faceY, faceSkew, earX, earY, eyebrowD = 5, eyebrowRot = 25, mouthDistanceModifier = 0;
+var calculatorWrapperCoords, svgCoords, emailCoords, mouthStatus = "small", blinking, eyeScale = 1, changeFace;
+var mySVG = document.getElementById('svgContainer'), eyeL = document.getElementById('eyeL'), eyeR = document.getElementById('eyeR'), eyebrowL = document.getElementById('eyebrowL'), eyebrowR = document.getElementById('eyebrowR'), nose = document.getElementById('nose'), mouth = document.getElementById('mouth'), mouthBG = document.getElementById('mouthBG'), mouthDefaultBG = document.getElementById('mouthDefault'), mouthSmallBG = document.getElementById('mouthSmall'), mouthMediumBG = document.getElementById('mouthMedium'), mouthLargeBG = document.getElementById('mouthLarge'), mouthMaskPath = document.getElementById('mouthMaskPath'), teeth = document.getElementById('teeth'), tongue = document.getElementById('tongue'), face = document.getElementById('face'), faceSkin = document.getElementById('faceSkin'), noseSkin = document.getElementById('noseSkin'), earL = document.getElementById('earL'), earR = document.getElementById('earR'), hairBack = document.getElementById('hairBack'), neck = document.getElementById('neck'), jacket = document.getElementById('jacket'), neckStuff = document.getElementById('neckStuff');
+var timeout = false;
+
+function resetFace() {
+	TweenMax.to([eyeL, eyeR, jacket, neckStuff], 1, {x: 0, y: 0, ease: Expo.easeOut});
+	TweenMax.to([eyebrowL, eyebrowR], 1, {x: 0, y: thumbPerc * eyebrowD, ease: Expo.easeOut});
+	TweenMax.to(nose, 1, {x: 0, y: 0, scaleX: 1, scaleY: 1, rotation: 0, ease: Expo.easeOut});
+	TweenMax.to(mouth, 1, {x: 0, y: 0 + mouthDistanceModifier, rotation: 0, ease: Expo.easeOut});
+	TweenMax.to([face, hairBack], 1, {x: 0, y: 0, skewX: 0, scaleY: 1, ease: Expo.easeOut});
+	TweenMax.to([earL, earR], 1, {x: 0, y: 0, scaleY: 1, ease: Expo.easeOut});
+}
+
+// starts eye blink
+function startBlinking(delay) {
+	if(delay) {
+		delay = getRandomInt(delay);
+	} else {
+		delay = 1;
+	}
+	blinking = TweenMax.to([eyeL, eyeR], .1, {delay: delay, scaleY: 0, yoyo: true, repeat: 1, transformOrigin: "center center", onComplete: function() {
+		startBlinking(12);
+	}});
+}
+
+// stops eye blink
+function stopBlinking() {
+	blinking.kill();
+	blinking = null;
+	TweenMax.set([eyeL, eyeR], {scaleY: eyeScale});
+}
+
+function getRandomInt(max) {
+	return Math.floor(Math.random() * Math.floor(max));
+}
+
+function getAngle(x1, y1, x2, y2) {
+	var angle = Math.atan2(y1 - y2, x1 - x2);
+	return angle;
+}
+
+function getPosition(el) {
+	var xPos = 0;
+	var yPos = 0;
+
+	while (el) {
+		if (el.tagName == "BODY") {
+			// deal with browser quirks with body/window/document and page scroll
+			var xScroll = el.scrollLeft || document.documentElement.scrollLeft;
+			var yScroll = el.scrollTop || document.documentElement.scrollTop;
+
+			xPos += (el.offsetLeft - xScroll + el.clientLeft);
+			yPos += (el.offsetTop - yScroll + el.clientTop);
+		} else {
+			// for all other non-BODY elements
+			xPos += (el.offsetLeft - el.scrollLeft + el.clientLeft);
+			yPos += (el.offsetTop - el.scrollTop + el.clientTop);
+		}
+
+		el = el.offsetParent;
+	}
+	//console.log("xPos: " + xPos + ", yPos: " + yPos);
+	return {
+		x: xPos,
+		y: yPos
+	};
+}
+
+function onDrag(e) {
+	// calculate value based on slider thumb position
+	thumbCoords = thumb.getBoundingClientRect();
+	thumbValue = thumbCoords.left - sliderCoords.left;
+	thumbPerc = thumbValue/(sliderCoords.width - thumb.offsetWidth);
+
+	// update slider output
+	sliderValue = sliderMin + ((sliderMax - sliderMin) * (thumbValue/(sliderCoords.width - thumb.offsetWidth)));
+	output.innerHTML = "£" + numberWithCommas(roundNumber(sliderValue));
+	TweenMax.set(output, {x: thumbValue + sliderCoords.left - sliderWrapperCoords.left - (thumb.offsetWidth/2) + 3});
+
+	// update skillet 
+	let handlePos1 = skilletHandleMin + ((skilletHandleMax - skilletHandleMin) * thumbPerc);
+	let handlePos2 = skilletHandleMin2 + ((skilletHandleMax2 - skilletHandleMin2) * thumbPerc);	
+	TweenMax.to(skillet, .5, {x: skilletMax * thumbPerc, ease: Quad.easeOut});
+	TweenMax.to(skilletHandle, .5, {
+		attr:{
+			"x1": handlePos1,
+			"x2": handlePos2
+		}, 
+		ease: Quad.easeOut
+	});
+	TweenMax.to('#money .top', .5, {skewX: moneyMin + ((moneyMax - moneyMin) * thumbPerc), ease: Quad.easeOut});
+	TweenMax.to('#money .front', .5, {scaleY: 1 + (moneyHeightMax * thumbPerc), ease: Quad.easeOut});
+	TweenMax.to(money, .5, {x: 20 * thumbPerc, y: -moneyHeightMax * thumbPerc, ease: Quad.easeOut});
+	TweenMax.to('#sideL', .5, {/*attr: {"width": -w}*/ scaleX: -(34.0625 + (8 / Math.tan(toRadians(90 - (moneyMin + ((moneyMax - moneyMin) * thumbPerc)))))), scaleY: 8 + (moneyHeightMax * thumbPerc), ease: Quad.easeOut});
+	TweenMax.to('#sideR', .5, {scaleX: -(34.0625 - (8 / Math.tan(toRadians(90 - (moneyMin + ((moneyMax - moneyMin) * thumbPerc)))))), scaleY: 8 + (moneyHeightMax * thumbPerc), ease: Quad.easeOut});
+	TweenMax.to(['#handBG', '#handThumb'], .5, {x: handlePos2 - skilletHandleMin2, ease: Quad.eaesOut});
+
+	// update arm
+	TweenMax.to('#forearm', .5, {
+		attr:{
+			"x1": handlePos2,
+			"x2": 292 + (420 * thumbPerc),
+			"y2": 496 + (10 * thumbPerc)
+		},
+		ease: Quad.easeOut
+	});
+	TweenMax.to('#sleeveHole', .5, {x: 292 + (420 * thumbPerc), y: 0 + (10 * thumbPerc), ease: Quad.easeOut});
+
+	// calculate path data for arm 	(original path: M374.4 490.7C482 486 481 462 525 378)
+	let path;
+	TweenMax.to(armPoints, .5, {
+		x1: 292 + (400 * thumbPerc), 
+		y1: 494 + (10 * thumbPerc), 
+		h1x: 400 + (150 * thumbPerc), 
+		h1y: 490 + (40 * thumbPerc), 
+		ease: Quad.easeOut, 
+		onUpdate: function() {
+			path = "M" + armPoints.x1 + " " + armPoints.y1 + "C" + armPoints.h1x + " " + armPoints.h1y + " 481 462 525 378";
+			TweenMax.set('#arm', {attr:{"d": path}});
+		}
+	});
+
+	if(changeFace) {
+		// calculate and move face and face elements
+		eyeLAngle = getAngle(eyeLCoords.x, eyeLCoords.y, thumbCoords.left + 27, thumbCoords.top + 27);
+		eyeRAngle = getAngle(eyeRCoords.x, eyeRCoords.y, thumbCoords.left + 27, thumbCoords.top + 27);
+		noseAngle = getAngle(noseCoords.x, noseCoords.y, thumbCoords.left + 27, thumbCoords.top + 27);
+		mouthAngle = getAngle(mouthCoords.x, mouthCoords.y, thumbCoords.left + 27, thumbCoords.top + 27);
+		eyeLX = Math.cos(eyeLAngle) * 20;
+		eyeLY = Math.sin(eyeLAngle) * 25;
+		eyeRX = Math.cos(eyeRAngle) * 20;
+		eyeRY = Math.sin(eyeRAngle) * 25;
+		noseX = Math.cos(noseAngle) * 25;
+		noseY = Math.sin(noseAngle) * 25;
+		mouthX = Math.cos(mouthAngle) * 25;
+		mouthY = (Math.sin(mouthAngle) * 25) - mouthDistanceModifier;
+		mouthR = Math.cos(mouthAngle) * 7;
+		faceX = mouthX * .25;
+		faceY = Math.sin(noseAngle) * 18;
+		faceSkew = -Math.cos(mouthAngle) * .25;
+		earX = Math.cos(noseAngle) * 3;
+		earY = 10 + (Math.cos(noseAngle) * 3);
+
+		TweenMax.to(eyeL, 1, {x: -eyeLX , y: -eyeRY, attr: {"r": 5 - (thumbPerc * 2)}, ease: Expo.easeOut});
+		TweenMax.to(eyeR, 1, {x: -eyeRX , y: -eyeLY, attr: {"r": 5 - (thumbPerc * 2)}, ease: Expo.easeOut});
+		TweenMax.to(eyebrowL, 1, {x: -eyeLX , y: -eyeRY + (thumbPerc * eyebrowD), rotation: thumbPerc * eyebrowRot, ease: Expo.easeOut, transformOrigin: "center center"});
+		TweenMax.to(eyebrowR, 1, {x: -eyeRX , y: -eyeLY + (thumbPerc * eyebrowD), rotation: -thumbPerc * eyebrowRot, ease: Expo.easeOut, transformOrigin: "center center"});
+		TweenMax.to(nose, 1, {x: -noseX, y: -noseY, rotation: mouthR, transformOrigin: "center center", ease: Expo.easeOut});
+		TweenMax.to(mouth, 1, {x: -mouthX, y: -mouthY, rotation: mouthR, transformOrigin: "center center", ease: Expo.easeOut});
+		TweenMax.to(face, 1, {x: -faceX, y: -faceY, skewX: -faceSkew, transformOrigin: "center top", ease: Expo.easeOut});
+		TweenMax.to([faceSkin, noseSkin], 1, {attr:{"fill": "hsl(" + (30 - (thumbPerc * 20)) + ", 71%, 66%)"}});
+		TweenMax.to(hairBack, 1, {x: -faceX, y: -faceY, skewX: -faceSkew, transformOrigin: "center top", ease: Expo.easeOut});
+		TweenMax.to(earL, 1, {x: earX, y: earY, scaleY: .9, transformOrigin: "center center", ease: Expo.easeOut});
+		TweenMax.to(earR, 1, {x: earX, y: earY, scaleY: .9, transformOrigin: "center center", ease: Expo.easeOut});
+		TweenMax.to([earL, earR, neck], 1, {attr:{"fill": "hsl(" + (30 - (thumbPerc * 20)) + ", 54%, 59%)"}});
+		TweenMax.to(jacket, 1, {x: -10 * (1 - thumbPerc), ease: Expo.easeOut});
+		TweenMax.to(neckStuff, 1, {x: -5 * (1 - thumbPerc), ease: Expo.easeOut});
+		
+		if(thumbPerc < .25) {
+			TweenMax.to([mouthBG, mouthMaskPath], .5, {morphSVG: mouthDefaultBG, ease: Quad.easeOut});
+			TweenMax.to(teeth, .5, {y: 0, ease: Quad.easeOut});
+			TweenMax.to(tongue, .5, {y: 0, ease: Quad.easeOut});
+			//TweenMax.to(['#faceSkin', '#noseSkin'], .5, {attr:{"fill": "hsl(30, 71%, 66%)"}});
+			mouthDistanceModifier = 0;
+		} else if(thumbPerc < .5) {
+			TweenMax.to([mouthBG, mouthMaskPath], .5, {morphSVG: mouthSmallBG, ease: Quad.easeOut});
+			TweenMax.to(teeth, .5, {y: -4, ease: Quad.easeOut});
+			TweenMax.to(tongue, .5, {y: 5, ease: Quad.easeOut});
+			//TweenMax.to(['#faceSkin', '#noseSkin'], .5, {attr:{"fill": "hsl(10, 71%, 66%)"}});
+			mouthDistanceModifier = 3;
+		} else if(thumbPerc < .75) {
+			TweenMax.to([mouthBG, mouthMaskPath], .5, {morphSVG: mouthMediumBG, ease: Quad.easeOut});
+			TweenMax.to(teeth, .5, {y: -3, ease: Quad.easeOut});
+			TweenMax.to(tongue, .5, {y: 2, ease: Quad.easeOut});
+			//TweenMax.to(['#faceSkin', '#noseSkin'], .5, {attr:{"fill": "hsl(30, 71%, 66%)"}});
+			mouthDistanceModifier = 6;
+		} else {
+			TweenMax.to([mouthBG, mouthMaskPath], .5, {morphSVG: mouthLargeBG, ease: Quad.easeOut});
+			TweenMax.to(teeth, .5, {y: 1, ease: Quad.easeOut});
+			TweenMax.to(tongue, .5, {y: -1, ease: Quad.easeOut});
+			//TweenMax.to(['#faceSkin', '#noseSkin'], .5, {attr:{"fill": "hsl(30, 71%, 66%)"}});
+			mouthDistanceModifier = 7;
+		}
+	}
+
+	// update speech bubble
+	bubbleResult.innerHTML = "£" + numberWithCommas(Math.floor(roundNumber(sliderValue) * .14));
+}
+
+function numberWithCommas(x) {
+	return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+function getPosition(el) {
+	var xPos = 0;
+	var yPos = 0;
+
+	while (el) {
+		if (el.tagName == "BODY") {
+			// deal with browser quirks with body/window/document and page scroll
+			var xScroll = el.scrollLeft || document.documentElement.scrollLeft;
+			var yScroll = el.scrollTop || document.documentElement.scrollTop;
+
+			xPos += (el.offsetLeft - xScroll + el.clientLeft);
+			yPos += (el.offsetTop - yScroll + el.clientTop);
+		} else {
+			// for all other non-BODY elements
+			xPos += (el.offsetLeft - el.scrollLeft + el.clientLeft);
+			yPos += (el.offsetTop - el.scrollTop + el.clientTop);
+		}
+
+		el = el.offsetParent;
+	}
+	//console.log("xPos: " + xPos + ", yPos: " + yPos);
+	return {
+		x: xPos,
+		y: yPos
+	};
+}
+
+// Rounds a number to nearest 1000
+function roundNumber(num) {
+	return Math.round(num / 1000) * 1000;
+}
+
+// Converts from degrees to radians.
+function toRadians(degrees) {
+	return degrees * Math.PI / 180;
+};
+
+// Converts from radians to degrees.
+function toDegrees(radians) {
+	return radians * 180 / Math.PI;
+};
+
+function resizeHandler() {
+	initSlider();
+}
+
+function initSlider() {
+	// some measurements for the svg's elements
+	//svgCoords = getPosition(mySVG);
+	calculatorWrapperCoords = calculatorWrapper.getBoundingClientRect();
+	svgCoords = mySVG.getBoundingClientRect();
+	let svgScale = svgCoords.width/1000;
+	eyeLCoords = {x: svgCoords.left - calculatorWrapperCoords.left + (622.5 * svgScale), y: svgCoords.top - calculatorWrapperCoords.top + (222.5 * svgScale)};
+	eyeRCoords = {x: svgCoords.left - calculatorWrapperCoords.left + (676 * svgScale), y: svgCoords.top - calculatorWrapperCoords.top + (222.5 * svgScale)};
+	noseCoords = {x: svgCoords.left - calculatorWrapperCoords.left + (650.5 * svgScale), y: svgCoords.top - calculatorWrapperCoords.top + (245 * svgScale)};
+	mouthCoords = {x: svgCoords.left - calculatorWrapperCoords.left + (650.5 * svgScale), y: svgCoords.top - calculatorWrapperCoords.top + (270 * svgScale)};
+	console.log("calculatorWrapperCoords: " + calculatorWrapperCoords.x + ", " + calculatorWrapperCoords.y + "; svgCoords: " + svgCoords.x + ", " + svgCoords.y + "; eyeLCoords: " + eyeLCoords.x + ", " + eyeLCoords.y + "; eyeRCoords: " + eyeRCoords.x + ", " + eyeRCoords.y + "; noseCoords: " + noseCoords.x + ", " + noseCoords.y + "; mouthCoords: " + mouthCoords.x + ", " + mouthCoords.y);
+
+	// calculate initial slider traits
+	sliderCoords = slider.getBoundingClientRect(); 
+	sliderWrapperCoords = sliderWrapper.getBoundingClientRect();
+	sliderW = sliderCoords.width;
+
+	// set some initial visual properties
+	TweenMax.set('#sleeveHole', {x: 292});
+	TweenMax.set('#forearm',{attr:{"x1": skilletHandleMin2, "x2": 292, "y2": 496}});
+	TweenMax.set('#money .top', {skewX: moneyMin, transformOrigin: "center bottom", skewType:"simple"});
+	TweenMax.set('#money .front', {transformOrigin: "center top", scaleY: 1});
+	TweenMax.set('#sideL', {transformOrigin: "top left", /*attr: {"width": -w}*/ scaleX: -(34.0625 + (8 / Math.tan(toRadians(90 - moneyMin)))), scaleY: 8});
+	TweenMax.set('#sideR', {transformOrigin: "top right", scaleX: -(34.0625 - (8 / Math.tan(toRadians(90 - moneyMin)))), scaleY: 8});
+	TweenMax.set(['#chef', '#arm', '#hand', '#skillet', head], {opacity: 1});
+
+	// create slider
+	Draggable.create(thumb, {
+		type: "x", 
+		edgeResistance: 0.65, 
+		bounds: {minX: sliderCoords.left - sliderWrapperCoords.left, maxX: (sliderCoords.left - sliderWrapperCoords.left) + sliderCoords.width - thumb.offsetWidth},
+		lockAxis: true, 
+		throwProps: true,
+		throwResistance: 3000,
+		onThrowUpdate: onDrag,
+		edgeResistance: 1,
+		onDrag: onDrag,
+		onPress: function() {
+			changeFace = true;
+			thumbDragging = true;
+			onDrag();
+		},
+		onRelease: function() {
+			changeFace = false;
+			thumbDragging = false;
+			TweenMax.to(output, .25, {scaleX: 1, scaleY: 1, y: 0, ease: Quad.easeOut});
+			resetFace();
+		}
+	});
+	thumb.addEventListener("mouseover", function(e) {
+		TweenMax.to(output, .25, {scaleX: 1.25, scaleY: 1.25, y: -3, transformOrigin: "center bottom", ease: Quad.easeOut});
+	});
+	thumb.addEventListener("mouseout", function(e) {
+		if(thumbDragging == false) {
+			TweenMax.to(output, .25, {scaleX: 1, scaleY: 1, y: 0, ease: Quad.easeOut});
+		}
+	});
+	
+	// window.resize event listener
+	 window.addEventListener('resize', function() {
+		// clear the timeout
+		clearTimeout(timeout);
+		
+		// start timing for event "completion"
+		timeout = setTimeout(resizeHandler, 250);
+	}); 
+	
+	onDrag();
+	stopBlinking();
+	startBlinking();
+}
+
+console.clear();
+initSlider();
+    </script>
+</body>
+</html>
